@@ -9,12 +9,13 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 SECRET_KEY = os.getenv(
     "SECRET_KEY",
     "django-insecure-xpw^^%gg=a1chmhw=$sc^o3)s7xdrnvv%tvmz9fns(p_^yv8#7",
 )
-
 DEBUG = os.getenv("DJANGO_DEBUG", "0") == "1"
+
 
 ALLOWED_HOSTS = ["webserver", "localhost", "127.0.0.1"]
 RENDER_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
@@ -22,6 +23,10 @@ if RENDER_HOSTNAME and RENDER_HOSTNAME not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(RENDER_HOSTNAME)
 
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -61,6 +66,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "task_manager.wsgi.application"
 
+# Database
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -68,6 +74,7 @@ DATABASES = {
     }
 }
 
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
@@ -85,9 +92,19 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
+# Static files
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1"]
 if RENDER_HOSTNAME:
