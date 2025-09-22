@@ -5,13 +5,13 @@ install:
 	uv pip install --system -r requirements.txt
 
 migrate:
-	python manage.py migrate --noinput
+	uv run python manage.py migrate --noinput
 
 collectstatic:
-	python manage.py collectstatic --noinput
+	uv run python manage.py collectstatic --noinput
 
 run:
-	python manage.py runserver 0.0.0.0:8000
+	uv run python manage.py runserver 0.0.0.0:8000
 
 dev: install migrate
 	$(MAKE) run
@@ -20,7 +20,7 @@ build:
 	./build.sh
 
 render-start:
-	gunicorn task_manager.wsgi --bind 0.0.0.0:$$PORT
+	uv run gunicorn task_manager.wsgi --bind 0.0.0.0:$$PORT
 lint:
 	uv run ruff check --fix
 format:
