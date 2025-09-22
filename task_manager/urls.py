@@ -17,10 +17,16 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-
+from django.contrib.auth.views import LoginView
 from . import views
 
 urlpatterns = [
     path("", views.index, name="home"),
     path("admin/", admin.site.urls),
+    path("login/", LoginView.as_view(template_name="users/login.html"), name="login"),
+    path("logout/", views.LogoutPostOnlyView.as_view(), name="logout"),
+    path("users/", views.UsersListView.as_view(), name="users_list"),
+    path("users/create/", views.UserCreateView.as_view(), name="users_create"),
+    path("users/<int:pk>/update/", views.UserUpdateView.as_view(), name="users_update"),
+    path("users/<int:pk>/delete/", views.UserDeleteView.as_view(), name="users_delete"),
 ]
