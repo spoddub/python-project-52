@@ -23,4 +23,5 @@ render-start:
 	gunicorn task_manager.wsgi --bind 0.0.0.0:$$PORT
 lint:
 	uv run ruff check --fix
+format:
 	uv run ruff format
