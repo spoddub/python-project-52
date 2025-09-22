@@ -1,3 +1,4 @@
 .env
 .python-version
 task_manager/__pycache__
+uv.lock
