@@ -1,7 +1,7 @@
 .PHONY: install migrate collectstatic run dev build render-start
 
 install:
-	uv export --format=requirements --quiet > requirements.txt
+	uv export --format=requirements.txt --quiet > requirements.txt
 	uv pip install --system -r requirements.txt
 
 migrate:
