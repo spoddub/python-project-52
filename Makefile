@@ -1,4 +1,4 @@
-.PHONY: install migrate collectstatic run dev build render-start
+.PHONY: install install-local migrate collectstatic run dev build render-start
 
 install:
 	uv export --format=requirements.txt --quiet > requirements.txt
@@ -10,17 +10,23 @@ migrate:
 collectstatic:
 	uv run python manage.py collectstatic --noinput
 
+install-local:
+	uv venv --clear
+	uv pip install --python .venv/bin/python -r requirements.txt
+
 run:
 	uv run python manage.py runserver 0.0.0.0:8000
 
-dev: install migrate
+dev: install-local migrate
 	$(MAKE) run
 
+# ==== Обёртки ====
 build:
 	./build.sh
 
 render-start:
 	uv run gunicorn task_manager.wsgi --bind 0.0.0.0:$$PORT
+
 lint:
 	uv run ruff check --fix
 format:
