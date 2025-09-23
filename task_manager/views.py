@@ -111,16 +111,11 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "statuses/delete.html"
     success_url = reverse_lazy("statuses_list")
 
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
         try:
-            response = super().delete(request, *args, **kwargs)
-            messages.success(self.request, "Status deleted successfully")
-            return response
+            self.object.delete()
+            messages.success(request, "Status deleted successfully")
         except ProtectedError:
-            messages.error(self.request, "Cannot delete status because it is in use")
-            return self.redirect_to_list()
-
-    def redirect_to_list(self):
-        from django.shortcuts import redirect
-
-        return redirect("statuses_list")
+            messages.error(request, "Cannot delete status because it is in use")
+        return redirect(self.success_url)
