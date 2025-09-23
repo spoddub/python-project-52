@@ -6,6 +6,8 @@ from django.contrib.auth.views import LogoutView
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from .models import Status
+from django.db.models import ProtectedError
 
 
 def index(request):
@@ -68,3 +70,57 @@ class UserDeleteView(LoginRequiredMixin, OnlySelfMixin, DeleteView):
 class LogoutPostOnlyView(LogoutView):
     http_method_names = ["post"]
     next_page = reverse_lazy("home")
+
+
+class StatusListView(LoginRequiredMixin, ListView):
+    model = Status
+    template_name = "statuses/list.html"
+    context_object_name = "statuses"
+
+
+class StatusCreateView(LoginRequiredMixin, CreateView):
+    model = Status
+    fields = ["name"]
+    template_name = "statuses/create.html"
+    success_url = reverse_lazy("statuses_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Status created successfully")
+        return super().form_valid(form)
+
+
+class StatusUpdateView(LoginRequiredMixin, UpdateView):
+    model = Status
+    fields = ["name"]
+    template_name = "statuses/update.html"
+    success_url = reverse_lazy("statuses_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Status updated successfully")
+        return super().form_valid(form)
+
+
+class StatusDeleteView(LoginRequiredMixin, DeleteView):
+    model = Status
+    template_name = "statuses/delete.html"
+    success_url = reverse_lazy("statuses_list")
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            messages.success(self.request, "Status deleted successfully")
+            return super().delete(request, *args, **kwargs)
+        except ProtectedError:
+            messages.error(self.request, "Cannot delete status because it is in use")
+            return self.redirect_to_list()
+
+    def post(self, request, *args, **kwargs):
+        try:
+            return super().post(request, *args, **kwargs)
+        except ProtectedError:
+            messages.error(self.request, "Cannot delete status because it is in use")
+            return self.redirect_to_list()
+
+    def redirect_to_list(self):
+        from django.shortcuts import redirect
+
+        return redirect("statuses_list")
