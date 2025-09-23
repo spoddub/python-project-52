@@ -4,3 +4,6 @@ extend-exclude = [
   "**/migrations/**",
   "task_manager/settings.py",
 ]
+[lint]
+preview = true
+select = ["E", "F", "I", "C90"]
