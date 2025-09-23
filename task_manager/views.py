@@ -70,9 +70,13 @@ class UserDeleteView(LoginRequiredMixin, OnlySelfMixin, DeleteView):
     template_name = "users/delete.html"
     success_url = reverse_lazy("users_list")
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, "User deleted successfully.")
-        return super().delete(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        try:
+            self.object.delete()
+        except ProtectedError:
+            messages.error(request, "Cannot delete user because it is in use")
+        return redirect(self.success_url)
 
 
 class LogoutPostOnlyView(LogoutView):
