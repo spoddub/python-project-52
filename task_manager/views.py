@@ -23,6 +23,12 @@ class UsersListView(ListView):
     context_object_name = "users"
 
 
+class UserUpdateForm(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ("username", "first_name", "last_name", "email")
+
+
 class UserCreateView(CreateView):
     model = User
     form_class = UserCreationForm
@@ -43,12 +49,12 @@ class OnlySelfMixin(UserPassesTestMixin):
 
     def handle_no_permission(self):
         messages.error(self.request, self.get_permission_denied_message())
-        return redirect("user_list")
+        return redirect("users_list")
 
 
 class UserUpdateView(LoginRequiredMixin, OnlySelfMixin, UpdateView):
     model = User
-    form_class = UserChangeForm
+    form_class = UserUpdateForm
     template_name = "users/update.html"
     success_url = reverse_lazy("users_list")
 
@@ -107,15 +113,9 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         try:
+            response = super().delete(request, *args, **kwargs)
             messages.success(self.request, "Status deleted successfully")
-            return super().delete(request, *args, **kwargs)
-        except ProtectedError:
-            messages.error(self.request, "Cannot delete status because it is in use")
-            return self.redirect_to_list()
-
-    def post(self, request, *args, **kwargs):
-        try:
-            return super().post(request, *args, **kwargs)
+            return response
         except ProtectedError:
             messages.error(self.request, "Cannot delete status because it is in use")
             return self.redirect_to_list()
