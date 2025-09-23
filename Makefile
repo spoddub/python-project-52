@@ -1,4 +1,4 @@
-.PHONY: install install-local migrate collectstatic run dev build render-start
+.PHONY: install install-local migrate collectstatic run dev build render-start lint format test
 
 install:
 	uv export --format=requirements.txt --quiet > requirements.txt
@@ -31,3 +31,5 @@ lint:
 	uv run ruff check --fix
 format:
 	uv run ruff format
+test:
+	uv run python manage.py test -v 2
