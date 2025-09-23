@@ -5,8 +5,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LogoutView
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from .models import Status
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from .models import Status, Task
+from .forms import TaskForm
 from django.db.models import ProtectedError
 
 
@@ -118,4 +119,65 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
             messages.success(request, "Status deleted successfully")
         except ProtectedError:
             messages.error(request, "Cannot delete status because it is in use")
+        return redirect(self.success_url)
+
+
+class OnlyAuthorDeleteMixin(UserPassesTestMixin):
+    """Удалять задачу может только автор."""
+
+    permission_denied_message = "You can delete only your own task."
+
+    def test_func(self):
+        obj = self.get_object()
+        return self.request.user.is_authenticated and obj.author_id == self.request.user.id
+
+    def handle_no_permission(self):
+        messages.error(self.request, self.get_permission_denied_message())
+        return redirect("tasks_list")
+
+
+class TasksListView(LoginRequiredMixin, ListView):
+    model = Task
+    template_name = "tasks/list.html"
+    context_object_name = "tasks"
+
+
+class TaskDetailView(LoginRequiredMixin, DetailView):
+    model = Task
+    template_name = "tasks/detail.html"
+    context_object_name = "task"
+
+
+class TaskCreateView(LoginRequiredMixin, CreateView):
+    model = Task
+    form_class = TaskForm
+    template_name = "tasks/create.html"
+    success_url = reverse_lazy("tasks_list")
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        messages.success(self.request, "Task created successfully")
+        return super().form_valid(form)
+
+
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
+    model = Task
+    form_class = TaskForm
+    template_name = "tasks/update.html"
+    success_url = reverse_lazy("tasks_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Task updated successfully")
+        return super().form_valid(form)
+
+
+class TaskDeleteView(LoginRequiredMixin, OnlyAuthorDeleteMixin, DeleteView):
+    model = Task
+    template_name = "tasks/delete.html"
+    success_url = reverse_lazy("tasks_list")
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        messages.success(request, "Task deleted successfully")
         return redirect(self.success_url)

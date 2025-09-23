@@ -16,8 +16,8 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
 from django.contrib.auth.views import LoginView
+from django.urls import path
 from . import views
 
 urlpatterns = [
@@ -33,4 +33,9 @@ urlpatterns = [
     path("statuses/create/", views.StatusCreateView.as_view(), name="statuses_create"),
     path("statuses/<int:pk>/update", views.StatusUpdateView.as_view(), name="statuses_update"),
     path("statuses/<int:pk>/delete/", views.StatusDeleteView.as_view(), name="statuses_delete"),
+    path("tasks/", views.TasksListView.as_view(), name="tasks_list"),
+    path("tasks/create/", views.TaskCreateView.as_view(), name="tasks_create"),
+    path("tasks/<int:pk>/", views.TaskDetailView.as_view(), name="tasks_detail"),
+    path("tasks/<int:pk>/update/", views.TaskUpdateView.as_view(), name="tasks_update"),
+    path("tasks/<int:pk>/delete/", views.TaskDeleteView.as_view(), name="tasks_delete"),
 ]

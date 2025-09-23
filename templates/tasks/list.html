@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Tasks — Task Manager{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Tasks</h1>
+
+<div class="mb-3">
+  <a class="btn btn-primary" href="{% url 'tasks_create' %}">Create task</a>
+</div>
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Status</th>
+      <th>Author</th>
+      <th>Executor</th>
+      <th>Created</th>
+      <th class="text-end">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for t in tasks %}
+      <tr>
+        <td><a href="{% url 'tasks_detail' t.pk %}">{{ t.name }}</a></td>
+        <td>{{ t.status.name }}</td>
+        <td>{{ t.author.username }}</td>
+        <td>{{ t.executor.username|default:"—" }}</td>
+        <td>{{ t.created_at|date:"Y-m-d H:i" }}</td>
+        <td class="text-end">
+          <a class="btn btn-sm btn-outline-primary me-2" href="{% url 'tasks_update' t.pk %}">Edit</a>
+          {% if request.user.pk == t.author_id %}
+            <a class="btn btn-sm btn-outline-danger" href="{% url 'tasks_delete' t.pk %}">Delete</a>
+          {% else %}
+            <span class="text-body-secondary">—</span>
+          {% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="6" class="text-body-secondary">No tasks yet</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

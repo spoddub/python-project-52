@@ -28,7 +28,10 @@
                   <a class="btn btn-outline-secondary" href="{% url 'users_list' %}">{% trans "Users" %}</a>
                 </li>
                 <li class="nav-item me-2">
-                  <a class="btn btn-outline-secondary" href="{% url 'statuses_list' %}">Statuses</a>
+                  <a class="btn btn-outline-secondary" href="{% url 'statuses_list' %}">{% trans "Statuses" %}</a>
+                </li>
+                <li class="nav-item me-2">
+                  <a class="btn btn-outline-secondary" href="{% url 'tasks_list' %}">{% trans "Tasks" %}</a>
                 </li>
                 <li class="nav-item">
                   <form method="post" action="{% url 'logout' %}">
@@ -46,8 +49,11 @@
                 <li class="nav-item me-2">
                   <a class="btn btn-primary" href="{% url 'users_list' %}">{% trans "Users" %}</a>
                 </li>
+                <li class="nav-item me-2">
+                  <a class="btn btn-outline-secondary" href="{% url 'statuses_list' %}">{% trans "Statuses" %}</a>
+                </li>
                 <li class="nav-item">
-                  <a class="btn btn-outline-secondary" href="{% url 'statuses_list' %}">Statuses</a>
+                  <a class="btn btn-outline-secondary" href="{% url 'tasks_list' %}">{% trans "Tasks" %}</a>
                 </li>
               {% endif %}
             </ul>
@@ -55,8 +61,10 @@
         </div>
       </nav>
     </header>
+
     <main class="py-5">
       <div class="container">
+        {# Сообщения ВНЕ блока content, чтобы не перезатирались дочерними шаблонами #}
         {% if messages %}
           <div class="mb-3">
             {% for message in messages %}
