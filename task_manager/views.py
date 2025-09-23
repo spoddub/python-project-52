@@ -1,14 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LogoutView
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
-from .models import Status, Task
-from .forms import TaskForm
 from django.db.models import ProtectedError
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
+
+from .forms import TaskForm
+from .models import Status, Task
 
 
 def index(request):
