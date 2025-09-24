@@ -1,7 +1,29 @@
 {% extends "base.html" %}
+{% load django_bootstrap5 %}
 {% block title %}Tasks — Task Manager{% endblock %}
 {% block content %}
 <h1 class="h3 mb-4">Tasks</h1>
+
+<form method="get" class="row g-3 mb-4">
+  <div class="col-md-3">
+    {% bootstrap_field filter.form.status show_label=True %}
+  </div>
+  <div class="col-md-3">
+    {% bootstrap_field filter.form.executor show_label=True %}
+  </div>
+  <div class="col-md-3">
+    {% bootstrap_field filter.form.label show_label=True %}
+  </div>
+  <div class="col-md-2 d-flex align-items-end">
+    <div class="form-check">
+      {{ filter.form.self_tasks }}
+      <label class="form-check-label" for="{{ filter.form.self_tasks.id_for_label }}">Only my tasks</label>
+    </div>
+  </div>
+  <div class="col-md-1 d-flex align-items-end">
+    <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+  </div>
+</form>
 
 <div class="mb-3">
   <a class="btn btn-primary" href="{% url 'tasks_create' %}">Create task</a>
@@ -14,6 +36,7 @@
       <th>Status</th>
       <th>Author</th>
       <th>Executor</th>
+      <th>Labels</th>
       <th>Created</th>
       <th class="text-end">Actions</th>
     </tr>
@@ -25,6 +48,11 @@
         <td>{{ t.status.name }}</td>
         <td>{{ t.author.username }}</td>
         <td>{{ t.executor.username|default:"—" }}</td>
+        <td>
+          {% for lbl in t.labels.all %}
+            <span class="badge text-bg-secondary">{{ lbl.name }}</span>
+          {% empty %} — {% endfor %}
+        </td>
         <td>{{ t.created_at|date:"Y-m-d H:i" }}</td>
         <td class="text-end">
           <a class="btn btn-sm btn-outline-primary me-2" href="{% url 'tasks_update' t.pk %}">Edit</a>
@@ -36,7 +64,7 @@
         </td>
       </tr>
     {% empty %}
-      <tr><td colspan="6" class="text-body-secondary">No tasks yet</td></tr>
+      <tr><td colspan="7" class="text-body-secondary">No tasks found</td></tr>
     {% endfor %}
   </tbody>
 </table>
