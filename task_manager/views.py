@@ -4,12 +4,14 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LogoutView
 from django.db.models import ProtectedError
+from django.forms import BaseModelForm
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from .forms import TaskForm
-from .models import Status, Task
+from .models import Status, Task, Label
 
 
 def index(request):
@@ -128,8 +130,6 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
 
 
 class OnlyAuthorDeleteMixin(UserPassesTestMixin):
-    """Удалять задачу может только автор."""
-
     permission_denied_message = "You can delete only your own task."
 
     def test_func(self):
@@ -185,4 +185,47 @@ class TaskDeleteView(LoginRequiredMixin, OnlyAuthorDeleteMixin, DeleteView):
         self.object = self.get_object()
         self.object.delete()
         messages.success(request, "Task deleted successfully")
+        return redirect(self.success_url)
+
+
+class LabelsListView(LoginRequiredMixin, ListView):
+    model = Label
+    template_name = "labels/list.html"
+    context_object_name = "labels"
+
+
+class LabelCreateView(LoginRequiredMixin, CreateView):
+    model = Label
+    fields = ["name"]
+    template_name = "labels/create.html"
+    success_url = reverse_lazy("labels_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Label created successfully")
+        return super().form_valid(form)
+
+
+class LabelUpdateView(LoginRequiredMixin, UpdateView):
+    model = Label
+    fields = ["name"]
+    template_name = "labels/update.html"
+    success_url = reverse_lazy("labels_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Label updated successfully")
+        return super().form_valid(form)
+
+
+class LabelDeleteView(LoginRequiredMixin, DeleteView):
+    model = Label
+    template_name = "labels/delete.html"
+    success_url = reverse_lazy("labels_list")
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.tasks.exists():
+            messages.error(request, "Cannot delete label because it is in use")
+            return redirect(self.success_url)
+        self.object.delete()
+        messages.success(request, "Label deleted successfully")
         return redirect(self.success_url)
