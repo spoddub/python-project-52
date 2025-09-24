@@ -4,14 +4,12 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LogoutView
 from django.db.models import ProtectedError
-from django.forms import BaseModelForm
-from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from .forms import TaskForm
-from .models import Status, Task, Label
+from .models import Label, Status, Task
 
 
 def index(request):
