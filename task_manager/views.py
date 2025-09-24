@@ -1,3 +1,4 @@
+import rollbar
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
@@ -238,3 +239,8 @@ class LabelDeleteView(LoginRequiredMixin, DeleteView):
         self.object.delete()
         messages.success(request, "Label deleted successfully")
         return redirect(self.success_url)
+
+
+def rollbar_test_view(request):
+    rollbar.report_message("Rollbar test ping from /rollbar-test/", "info")
+    raise RuntimeError("Rollbar test exception")

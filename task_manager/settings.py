@@ -28,7 +28,6 @@ if RENDER_HOSTNAME and RENDER_HOSTNAME not in ALLOWED_HOSTS:
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
 
-# Приложения
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -49,6 +48,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404",
 ]
 
 ROOT_URLCONF = "task_manager.urls"
@@ -129,6 +129,13 @@ STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
+}
+
+ROLLBAR = {
+    "access_token": os.getenv("ROLLBAR_ACCESS_TOKEN", ""),
+    "environment": os.getenv("ROLLBAR_ENV", "development" if DEBUG else "production"),
+    "code_version": os.getenv("RENDER_GIT_COMMIT", "1.0"),
+    "root": str(BASE_DIR),
 }
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1"]

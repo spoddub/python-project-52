@@ -43,4 +43,5 @@ urlpatterns = [
     path("labels/create/", views.LabelCreateView.as_view(), name="labels_create"),
     path("labels/<int:pk>/update/", views.LabelUpdateView.as_view(), name="labels_update"),
     path("labels/<int:pk>/delete/", views.LabelDeleteView.as_view(), name="labels_delete"),
+    path("rollbar-test/", views.rollbar_test_view, name="rollbar_test"),
 ]
