@@ -71,20 +71,14 @@ TEMPLATES = [
 WSGI_APPLICATION = "task_manager.wsgi.application"
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-RENDER_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME", "")
 
 if DATABASE_URL:
-    DB_SSL_REQUIRE = os.getenv("DB_SSL_REQUIRE")
-    if DB_SSL_REQUIRE is None:
-        ssl_require_flag = bool(RENDER_HOSTNAME)
-    else:
-        ssl_require_flag = DB_SSL_REQUIRE == "1"
-
+    ssl_required = os.getenv("DB_SSL_REQUIRED", "0") == "1"
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
             conn_max_age=600,
-            ssl_require=ssl_require_flag,
+            ssl_require=ssl_required,
         )
     }
 else:
