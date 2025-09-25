@@ -15,18 +15,33 @@
     </tr>
   </thead>
   <tbody>
-    {% for u in users %}
-      <tr>
-        <td>{{ u.id }}</td>
-        <td>{{ u.username }}</td>
-        <td>{{ u.first_name }} {{ u.last_name }}</td>
-        <td>{{ u.date_joined|date:"d.m.Y H:i" }}</td>
-        <td>
-          <a href="{% url 'users_update' u.id %}">Изменить</a><br>
-          <a href="{% url 'users_delete' u.id %}">Удалить</a>
-        </td>
-      </tr>
-    {% endfor %}
+    {% if users %}
+      {% for u in users %}
+        <tr>
+          <td>{{ u.id }}</td>
+          <td>{{ u.username }}</td>
+          <td>{{ u.first_name }} {{ u.last_name }}</td>
+          <td>{{ u.date_joined|date:"d.m.Y H:i" }}</td>
+          <td>
+            <a href="{% url 'users_update' u.id %}">Изменить</a><br>
+            <a href="{% url 'users_delete' u.id %}">Удалить</a>
+          </td>
+        </tr>
+      {% endfor %}
+    {% else %}
+      {% for u in object_list %}
+        <tr>
+          <td>{{ u.id }}</td>
+          <td>{{ u.username }}</td>
+          <td>{{ u.first_name }} {{ u.last_name }}</td>
+          <td>{{ u.date_joined|date:"d.m.Y H:i" }}</td>
+          <td>
+            <a href="{% url 'users_update' u.id %}">Изменить</a><br>
+            <a href="{% url 'users_delete' u.id %}">Удалить</a>
+          </td>
+        </tr>
+      {% endfor %}
+    {% endif %}
   </tbody>
 </table>
 {% endblock %}
