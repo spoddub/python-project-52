@@ -1,35 +1,31 @@
-.PHONY: install install-local migrate collectstatic run dev build render-start lint format test
+.PHONY: build install collectstatic migrate start start-dev render-start lint format test
+
+build:
+	./build.sh
 
 install:
-	uv export --format=requirements.txt --quiet > requirements.txt
-	uv pip install --system -r requirements.txt
-
-migrate:
-	uv run python manage.py migrate --noinput
+	uv sync
 
 collectstatic:
 	uv run python manage.py collectstatic --noinput
 
-install-local:
-	uv venv --clear
-	uv pip install --python .venv/bin/python -r requirements.txt
+migrate:
+	uv run python manage.py migrate --noinput
 
-run:
-	uv run python manage.py runserver 0.0.0.0:8000
+start:
+	uv run python manage.py runserver
 
-dev: install-local migrate
-	$(MAKE) run
-
-# ==== Обёртки ====
-build:
-	./build.sh
+start-dev:
+	uv run python manage.py runserver --nostatic
 
 render-start:
-	uv run gunicorn task_manager.wsgi --bind 0.0.0.0:$$PORT
+	uv run gunicorn task_manager.wsgi
 
 lint:
 	uv run ruff check --fix
+
 format:
 	uv run ruff format
+
 test:
 	uv run python manage.py test -v 2
