@@ -14,7 +14,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for u in user_list %}
+    {% for u in users %}
       <tr>
         <td>{{ u.id }}</td>
         <td>{{ u.username }}</td>
@@ -24,6 +24,10 @@
           <a href="{% url 'users_update' u.id %}">Изменить</a><br>
           <a href="{% url 'users_delete' u.id %}">Удалить</a>
         </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="5" class="text-body-secondary">Нет пользователей</td>
       </tr>
     {% endfor %}
   </tbody>

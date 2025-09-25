@@ -25,7 +25,7 @@ User = get_user_model()
 class UsersListView(ListView):
     model = User
     template_name = "users/index.html"
-    context_object_name = "user_list"
+    context_object_name = "users"
 
 
 class UserUpdateForm(UserChangeForm):
