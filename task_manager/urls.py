@@ -17,7 +17,6 @@ Including another URLconf
 
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.auth.views import LoginView
 from django.urls import path
 
 from . import views
@@ -25,7 +24,7 @@ from . import views
 urlpatterns = [
     path("", views.index, name="home"),
     path("admin/", admin.site.urls),
-    path("login/", LoginView.as_view(template_name="users/login.html"), name="login"),
+    path("login/", views.SignInView.as_view(), name="login"),
     path("logout/", views.LogoutPostOnlyView.as_view(), name="logout"),
     path("users/", views.UsersListView.as_view(), name="users_list"),
     path("users/create/", views.UserCreateView.as_view(), name="users_create"),
@@ -44,9 +43,7 @@ urlpatterns = [
     path("labels/create/", views.LabelCreateView.as_view(), name="labels_create"),
     path("labels/<int:pk>/update/", views.LabelUpdateView.as_view(), name="labels_update"),
     path("labels/<int:pk>/delete/", views.LabelDeleteView.as_view(), name="labels_delete"),
-    path("rollbar-test/", views.rollbar_test_view, name="rollbar_test"),
 ]
-
 
 if settings.DEBUG:
     urlpatterns += [

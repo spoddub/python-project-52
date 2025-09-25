@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.views import LogoutView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.db.models import ProtectedError
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -41,12 +41,12 @@ class UserCreateView(CreateView):
     success_url = reverse_lazy("login")
 
     def form_valid(self, form):
-        messages.success(self.request, "User registered successfully. Please sign in.")
+        messages.success(self.request, "Пользователь успешно зарегистрирован")
         return super().form_valid(form)
 
 
 class OnlySelfMixin(UserPassesTestMixin):
-    permission_denied_message = "You can modify only your own account."
+    permission_denied_message = "У вас нет прав для изменения другого пользователя."
 
     def test_func(self):
         obj = self.get_object()
@@ -64,7 +64,7 @@ class UserUpdateView(LoginRequiredMixin, OnlySelfMixin, UpdateView):
     success_url = reverse_lazy("users_list")
 
     def form_valid(self, form):
-        messages.success(self.request, "User updated successfully.")
+        messages.success(self.request, "Пользователь успешно изменён")
         return super().form_valid(form)
 
 
@@ -77,14 +77,27 @@ class UserDeleteView(LoginRequiredMixin, OnlySelfMixin, DeleteView):
         self.object = self.get_object()
         try:
             self.object.delete()
+            messages.success(request, "Пользователь успешно удалён")
         except ProtectedError:
-            messages.error(request, "Cannot delete user because it is in use")
+            messages.error(request, "Невозможно удалить пользователя, потому что он используется")
         return redirect(self.success_url)
+
+
+class SignInView(LoginView):
+    template_name = "users/login.html"
+
+    def form_valid(self, form):
+        messages.success(self.request, "Вы залогинены")
+        return super().form_valid(form)
 
 
 class LogoutPostOnlyView(LogoutView):
     http_method_names = ["post"]
     next_page = reverse_lazy("home")
+
+    def post(self, request, *args, **kwargs):
+        messages.success(request, "Вы разлогинены")
+        return super().post(request, *args, **kwargs)
 
 
 class StatusListView(LoginRequiredMixin, ListView):
@@ -100,7 +113,7 @@ class StatusCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("statuses_list")
 
     def form_valid(self, form):
-        messages.success(self.request, "Status created successfully")
+        messages.success(self.request, "Статус успешно создан")
         return super().form_valid(form)
 
 
@@ -111,7 +124,7 @@ class StatusUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy("statuses_list")
 
     def form_valid(self, form):
-        messages.success(self.request, "Status updated successfully")
+        messages.success(self.request, "Статус успешно изменён")
         return super().form_valid(form)
 
 
@@ -124,14 +137,14 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
         self.object = self.get_object()
         try:
             self.object.delete()
-            messages.success(request, "Status deleted successfully")
+            messages.success(request, "Статус успешно удалён")
         except ProtectedError:
-            messages.error(request, "Cannot delete status because it is in use")
+            messages.error(request, "Невозможно удалить статус, потому что он используется")
         return redirect(self.success_url)
 
 
 class OnlyAuthorDeleteMixin(UserPassesTestMixin):
-    permission_denied_message = "You can delete only your own task."
+    permission_denied_message = "Задачу может удалить только её автор."
 
     def test_func(self):
         obj = self.get_object()
@@ -171,7 +184,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        messages.success(self.request, "Task created successfully")
+        messages.success(self.request, "Задача успешно создана")
         return super().form_valid(form)
 
 
@@ -182,7 +195,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy("tasks_list")
 
     def form_valid(self, form):
-        messages.success(self.request, "Task updated successfully")
+        messages.success(self.request, "Задача успешно изменена")
         return super().form_valid(form)
 
 
@@ -194,7 +207,7 @@ class TaskDeleteView(LoginRequiredMixin, OnlyAuthorDeleteMixin, DeleteView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.delete()
-        messages.success(request, "Task deleted successfully")
+        messages.success(request, "Задача успешно удалена")
         return redirect(self.success_url)
 
 
@@ -211,7 +224,7 @@ class LabelCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("labels_list")
 
     def form_valid(self, form):
-        messages.success(self.request, "Label created successfully")
+        messages.success(self.request, "Метка успешно создана")
         return super().form_valid(form)
 
 
@@ -222,7 +235,7 @@ class LabelUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy("labels_list")
 
     def form_valid(self, form):
-        messages.success(self.request, "Label updated successfully")
+        messages.success(self.request, "Метка успешно изменена")
         return super().form_valid(form)
 
 
@@ -234,10 +247,10 @@ class LabelDeleteView(LoginRequiredMixin, DeleteView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object.tasks.exists():
-            messages.error(request, "Cannot delete label because it is in use")
+            messages.error(request, "Невозможно удалить метку, потому что она используется")
             return redirect(self.success_url)
         self.object.delete()
-        messages.success(request, "Label deleted successfully")
+        messages.success(request, "Метка успешно удалена")
         return redirect(self.success_url)
 
 
