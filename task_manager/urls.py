@@ -17,6 +17,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.contrib.auth.views import LoginView
+from django.http import HttpResponse
 from django.urls import path
 
 from . import views
@@ -45,3 +46,9 @@ urlpatterns = [
     path("labels/<int:pk>/delete/", views.LabelDeleteView.as_view(), name="labels_delete"),
     path("rollbar-test/", views.rollbar_test_view, name="rollbar_test"),
 ]
+
+
+def index(request):
+    a = None
+    a.hello()  # Creating an error with an invalid line of code
+    return HttpResponse("Hello, world. You're at the pollapp index.")

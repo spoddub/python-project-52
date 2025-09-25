@@ -48,7 +48,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404",
+    "rollbar.contrib.django.middleware.RollbarNotifierMiddleware",
 ]
 
 ROOT_URLCONF = "task_manager.urls"
@@ -132,10 +132,10 @@ STORAGES = {
 }
 
 ROLLBAR = {
-    "access_token": os.getenv("ROLLBAR_ACCESS_TOKEN", ""),
-    "environment": os.getenv("ROLLBAR_ENV", "development" if DEBUG else "production"),
-    "code_version": os.getenv("RENDER_GIT_COMMIT", "1.0"),
-    "root": str(BASE_DIR),
+    'access_token': 'a2f698d8e0b94cf58daa7a13ffc3f27a',
+    'environment': 'development' if DEBUG else 'production',
+    'code_version': '1.0',
+    'root': BASE_DIR,
 }
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1"]
