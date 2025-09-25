@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_DEBUG: "0"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Export requirements and install
+        run: |
+          uv export --format=requirements.txt --quiet > requirements.txt
+          uv pip install --system -r requirements.txt
+          uv pip install --system coverage
+
+      - name: Ruff (lint + format check)
+        run: |
+          uv run ruff check
+          uv run ruff format --check
+
+      - name: Run Django tests with coverage
+        run: |
+          uv run coverage run --source=task_manager manage.py test -v 2
+          uv run coverage xml -o coverage.xml
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
