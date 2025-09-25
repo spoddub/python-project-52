@@ -22,7 +22,7 @@ def index(request):
 User = get_user_model()
 
 
-class UsersListView(ListView):
+class UserIndexView(ListView):
     model = User
     template_name = "users/index.html"
     context_object_name = "users"
