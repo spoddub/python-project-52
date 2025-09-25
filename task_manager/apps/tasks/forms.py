@@ -9,6 +9,7 @@ from task_manager.apps.users.models import User
 
 
 class TaskForm(forms.ModelForm):
+
     class Meta:
         model = Task
         fields = ["name", "description", "status", "executor", "labels"]
@@ -23,9 +24,14 @@ class TaskForm(forms.ModelForm):
 
 
 class TaskFilterForm(django_filters.FilterSet):
-    status = django_filters.ModelChoiceFilter(queryset=Status.objects.all(), label=_("Status"))
 
-    executor = django_filters.ModelChoiceFilter(queryset=User.objects.all(), label=_("Executor"))
+    status = django_filters.ModelChoiceFilter(
+        queryset=Status.objects.all(), label=_("Status")
+    )
+
+    executor = django_filters.ModelChoiceFilter(
+        queryset=User.objects.all(), label=_("Executor")
+    )
 
     label = django_filters.ModelChoiceFilter(
         queryset=Label.objects.all(), label=_("Label"), field_name="labels"
