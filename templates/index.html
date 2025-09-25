@@ -1,25 +1,15 @@
 {% extends "base.html" %}
-{% load i18n %}
-{% block title %}{% trans "Home" %} — {% trans "Task Manager" %}{% endblock %}
+
+{% block title %}Менеджер задач Hexlet{% endblock %}
 
 {% block content %}
-  <div class="row align-items-center g-5">
-    <div class="col-lg-7">
-      <h1 class="display-5 fw-bold text-body-emphasis mb-3">{% trans "Welcome to Task Manager" %}</h1>
-      <p class="lead">
-        {% trans "Server-side rendered interface powered by Bootstrap. Use the navigation to sign in, sign up, or view users." %}
-      </p>
-      <div class="d-flex gap-2 mt-4">
-        <a class="btn btn-primary btn-lg" href="#">{% trans "Sign in" %}</a>
-        <a class="btn btn-outline-primary btn-lg" href="#">{% trans "Sign up" %}</a>
-        <a class="btn btn-outline-secondary btn-lg" href="#">{% trans "Users" %}</a>
-      </div>
-    </div>
-    <div class="col-lg-5">
-      <div class="p-5 border rounded-3 text-center">
-        <div class="display-6">Bootstrap 5</div>
-        <div class="text-body-secondary">{% trans "No custom styles used" %}</div>
-      </div>
-    </div>
+<h1 class="my-4"></h1>
+<div class="card">
+  <div class="card-body p-5 bg-light">
+    <div class="display-4">Привет от Хекслета!</div>
+    <p class="lead">Практические курсы по программированию</p>
+    <hr>
+    <a class="btn btn-primary btn-lg" href="https://ru.hexlet.io">Узнать больше</a>
   </div>
+</div>
 {% endblock %}
