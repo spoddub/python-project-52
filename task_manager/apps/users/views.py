@@ -3,14 +3,14 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
+from task_manager.apps.core import text_constants
 from task_manager.apps.core.mixins import (
     RestrictUserDeleteMixin,
     UserIsProfileOwnerMixin,
 )
 from task_manager.apps.users.forms import UserCreateForm, UserUpdateForm
 from task_manager.apps.users.models import User
-
-from task_manager.apps.core import text_constants
 
 
 @method_decorator(login_not_required, name="dispatch")
