@@ -1,70 +1,83 @@
 {% extends "base.html" %}
-{% load django_bootstrap5 %}
-{% block title %}Tasks — Task Manager{% endblock %}
+
 {% block content %}
-<h1 class="h3 mb-4">Tasks</h1>
+<h1 class="my-4">Задачи</h1>
 
-<form method="get" class="row g-3 mb-4">
-  <div class="col-md-3">
-    {% bootstrap_field filter.form.status show_label=True %}
-  </div>
-  <div class="col-md-3">
-    {% bootstrap_field filter.form.executor show_label=True %}
-  </div>
-  <div class="col-md-3">
-    {% bootstrap_field filter.form.label show_label=True %}
-  </div>
-  <div class="col-md-2 d-flex align-items-end">
-    <div class="form-check">
-      {{ filter.form.self_tasks }}
-      <label class="form-check-label" for="{{ filter.form.self_tasks.id_for_label }}">Only my tasks</label>
-    </div>
-  </div>
-  <div class="col-md-1 d-flex align-items-end">
-    <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
-  </div>
-</form>
+<a class="btn btn-primary mb-3" href="{% url 'tasks_create' %}" role="button">Создать задачу</a>
 
-<div class="mb-3">
-  <a class="btn btn-primary" href="{% url 'tasks_create' %}">Create task</a>
+<div class="card mb-3">
+  <div class="card-body bg-light">
+    <form class="form-inline center" method="get">
+      <div class="mb-3">
+        <label class="form-label" for="id_status">Статус</label>
+        <select name="status" class="form-select ml-2 mr-3" id="id_status">
+          <option value="" {% if not request.GET.status %}selected{% endif %}>---------</option>
+          {% if filter and filter.form.fields.status.queryset %}
+            {% for s in filter.form.fields.status.queryset %}
+              <option value="{{ s.id }}"{% if request.GET.status|default:'' == s.id|stringformat:"s" %} selected{% endif %}>{{ s.name }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="id_executor">Исполнитель</label>
+        <select name="executor" class="form-select mr-3 ml-2" id="id_executor">
+          <option value="" {% if not request.GET.executor %}selected{% endif %}>---------</option>
+          {% if filter and filter.form.fields.executor.queryset %}
+            {% for u in filter.form.fields.executor.queryset %}
+              <option value="{{ u.id }}"{% if request.GET.executor|default:'' == u.id|stringformat:"s" %} selected{% endif %}>{{ u.first_name }} {{ u.last_name }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="id_label">Метка</label>
+        <select name="label" class="form-select mr-3 ml-2" id="id_label">
+          <option value="" {% if not request.GET.label %}selected{% endif %}>---------</option>
+          {% if filter and filter.form.fields.label.queryset %}
+            {% for l in filter.form.fields.label.queryset %}
+              <option value="{{ l.id }}"{% if request.GET.label|default:'' == l.id|stringformat:"s" %} selected{% endif %}>{{ l.name }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <div class="form-check">
+          <input type="checkbox" name="self_tasks" class="form-check-input mr-3" id="id_self_tasks" {% if request.GET.self_tasks %}checked{% endif %}>
+          <label class="form-check-label" for="id_self_tasks">Только свои задачи</label>
+        </div>
+      </div>
+      <input class="btn btn-primary" type="submit" value="Показать">
+    </form>
+  </div>
 </div>
 
-<table class="table table-striped align-middle">
+<table class="table table-striped">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Status</th>
-      <th>Author</th>
-      <th>Executor</th>
-      <th>Labels</th>
-      <th>Created</th>
-      <th class="text-end">Actions</th>
+      <th>ID</th>
+      <th>Имя</th>
+      <th>Статус</th>
+      <th>Автор</th>
+      <th>Исполнитель</th>
+      <th>Дата создания</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     {% for t in tasks %}
       <tr>
-        <td><a href="{% url 'tasks_detail' t.pk %}">{{ t.name }}</a></td>
+        <td>{{ t.id }}</td>
+        <td><a href="{% url 'tasks_detail' t.id %}">{{ t.name }}</a></td>
         <td>{{ t.status.name }}</td>
-        <td>{{ t.author.username }}</td>
-        <td>{{ t.executor.username|default:"—" }}</td>
+        <td>{{ t.author.first_name }} {{ t.author.last_name }}</td>
+        <td>{% if t.executor %}{{ t.executor.first_name }} {{ t.executor.last_name }}{% endif %}</td>
+        <td>{{ t.created_at|date:"d.m.Y H:i" }}</td>
         <td>
-          {% for lbl in t.labels.all %}
-            <span class="badge text-bg-secondary">{{ lbl.name }}</span>
-          {% empty %} — {% endfor %}
-        </td>
-        <td>{{ t.created_at|date:"Y-m-d H:i" }}</td>
-        <td class="text-end">
-          <a class="btn btn-sm btn-outline-primary me-2" href="{% url 'tasks_update' t.pk %}">Edit</a>
-          {% if request.user.pk == t.author_id %}
-            <a class="btn btn-sm btn-outline-danger" href="{% url 'tasks_delete' t.pk %}">Delete</a>
-          {% else %}
-            <span class="text-body-secondary">—</span>
-          {% endif %}
+          <a href="{% url 'tasks_update' t.id %}">Изменить</a><br>
+          <a href="{% url 'tasks_delete' t.id %}">Удалить</a>
         </td>
       </tr>
-    {% empty %}
-      <tr><td colspan="7" class="text-body-secondary">No tasks found</td></tr>
     {% endfor %}
   </tbody>
 </table>
