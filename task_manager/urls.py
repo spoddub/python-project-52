@@ -15,9 +15,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.views import LoginView
-from django.http import HttpResponse
 from django.urls import path
 
 from . import views
@@ -33,7 +33,7 @@ urlpatterns = [
     path("users/<int:pk>/delete/", views.UserDeleteView.as_view(), name="users_delete"),
     path("statuses/", views.StatusListView.as_view(), name="statuses_list"),
     path("statuses/create/", views.StatusCreateView.as_view(), name="statuses_create"),
-    path("statuses/<int:pk>/update", views.StatusUpdateView.as_view(), name="statuses_update"),
+    path("statuses/<int:pk>/update/", views.StatusUpdateView.as_view(), name="statuses_update"),
     path("statuses/<int:pk>/delete/", views.StatusDeleteView.as_view(), name="statuses_delete"),
     path("tasks/", views.TasksListView.as_view(), name="tasks_list"),
     path("tasks/create/", views.TaskCreateView.as_view(), name="tasks_create"),
@@ -48,7 +48,7 @@ urlpatterns = [
 ]
 
 
-def index(request):
-    a = None
-    a.hello()  # Creating an error with an invalid line of code
-    return HttpResponse("Hello, world. You're at the pollapp index.")
+if settings.DEBUG:
+    urlpatterns += [
+        path("rollbar-test/", views.rollbar_test_view, name="rollbar_test"),
+    ]
