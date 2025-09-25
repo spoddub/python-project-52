@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Labels — Task Manager{% endblock %}
+
 {% block content %}
 <h1 class="h3 mb-4">Labels</h1>
 
@@ -16,13 +16,13 @@
     </tr>
   </thead>
   <tbody>
-    {% for l in labels %}
+    {% for label in labels %}
       <tr>
-        <td>{{ l.name }}</td>
-        <td>{{ l.created_at|date:"Y-m-d H:i" }}</td>
+        <td>{{ label.name }}</td>
+        <td>{{ label.created_at|date:"d.m.Y H:i" }}</td>
         <td class="text-end">
-          <a class="btn btn-sm btn-outline-primary me-2" href="{% url 'labels_update' l.pk %}">Edit</a>
-          <a class="btn btn-sm btn-outline-danger" href="{% url 'labels_delete' l.pk %}">Delete</a>
+          <a href="{% url 'labels_update' label.id %}">Изменить</a><br>
+          <a href="{% url 'labels_delete' label.id %}">Удалить</a>
         </td>
       </tr>
     {% empty %}
