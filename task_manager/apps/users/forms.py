@@ -6,7 +6,6 @@ from task_manager.apps.users.models import User
 
 
 class UserCreateForm(UserCreationForm):
-
     class Meta:
         model = User
         fields = [
@@ -22,10 +21,9 @@ class UserCreateForm(UserCreationForm):
 
 
 class UserUpdateForm(UserCreateForm):
-
     def clean_username(self):
         """Reject usernames that differ only in case.
-            Doesn't include current username"""
+        Doesn't include current username"""
         username = self.cleaned_data.get("username")
         if (
             username

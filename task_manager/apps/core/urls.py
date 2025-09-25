@@ -4,7 +4,7 @@ from task_manager.apps.core.views import (
     MainView,
     UserLoginView,
     UserLogoutView,
-    )
+)
 
 urlpatterns = [
     path("", MainView.as_view(), name="main"),

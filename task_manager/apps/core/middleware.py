@@ -14,7 +14,6 @@ class LoginRequiredWithMessageMiddleware(LoginRequiredMiddleware):
 
 
 class CustomRollbarNotifierMiddleware(RollbarNotifierMiddleware):
-
     def get_payload_data(self, request, exc):
         payload_data = {}
 

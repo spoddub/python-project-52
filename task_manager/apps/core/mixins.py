@@ -34,7 +34,7 @@ class UserIsTaskAuthorMixin(UserPassesTestWithMessageMixin):
         return self.request.user.id == self.get_object().author_id
 
 
-class RedirectOnRestrictedDeleteMixin():
+class RedirectOnRestrictedDeleteMixin:
     restict_message = "You can't delete this"
     redirect_url = "main"
 

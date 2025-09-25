@@ -5,7 +5,6 @@ from task_manager.apps.statuses.models import Status
 
 
 class StatusForm(ModelForm):
-
     class Meta:
         model = Status
         fields = ["name"]
