@@ -1,0 +1,16 @@
+{% extends "core/base.html" %}
+
+{% load i18n %}
+
+{% load django_bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% block content %}
+<h1 class="my-4">{% trans "Delete"%} {% block modelname %}{% endblock %}</h1>
+<p>{% trans "Do you really want to delete"%} {% block model %}{% endblock %}?</p>
+<form method="post">
+    {% csrf_token %}
+    <input class="btn btn-danger" type="submit" value="{% trans "Yes, delete"%}">
+</form>
+{% endblock %}
