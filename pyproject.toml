@@ -1,20 +1,35 @@
 [project]
 name = "hexlet-code"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.13"
+description = "Task Manager"
+requires-python = ">=3.10"
 dependencies = [
-    "dj-database-url>=2.2",
-    "django>=5.2.6",
-    "django-bootstrap5>=24.3",
-    "django-filter>=25.1",
-    "gunicorn>=21.2",
-    "psycopg[binary]>=3.2",
-    "python-dotenv>=1.0",
-    "rollbar>=1.3.0",
-    "ruff>=0.13.1",
-    "whitenoise>=6.7",
+  "Django==5.2.6",
+  "django-bootstrap5==25.2",
+  "django-filter==25.1",
+  "gunicorn==23.0.0",
+  "psycopg[binary]==3.2.10",
+  "python-dotenv==1.1.1",
+  "requests==2.32.5",
+  "rollbar==1.3.0",
+  "whitenoise==6.11.0",
 ]
-[tool.setuptools]
-packages = ["task_manager"]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["task_manager*"]
+
+[tool.uv]
+dev-dependencies = [
+  "ruff==0.13.2",
+  "pytest==8.4.2",
+  "pytest-django==4.11.1",
+  "pytest-playwright==0.7.1",
+  "pytest-base-url==2.1.0",
+  "pytest-dotenv==0.5.2",
+  "pytest-env==1.1.5",
+]
