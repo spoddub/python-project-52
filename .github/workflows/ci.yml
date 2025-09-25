@@ -9,28 +9,34 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IS_PRODUCTION: "false"
-      DJANGO_DEBUG: "1"
       SECRET_KEY: "test-secret-key"
       ROLLBAR_ACCESS_TOKEN: "test"
+      ROLLBAR_ENV: "test"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
 
-      - name: Install project dependencies
+      - name: Install project dependencies (app + dev)
         run: uv sync --dev
 
-      - name: Install coverage
-        run: uv run pip install coverage
+      - name: Ensure coverage is available
+        run: uv pip install coverage
 
-      - name: Ruff (format + lint)
+      - name: Ruff (format + lint, autofix)
         run: |
           uv run ruff format
+          uv run ruff check --fix
           uv run ruff check
 
       - name: Run Django tests with coverage
