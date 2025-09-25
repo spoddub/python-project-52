@@ -28,7 +28,9 @@ class Config:
     def allowed_hosts(self):
         allowed_hosts = []
         if self.hosts:
-            allowed_hosts = [host_name.strip() for host_name in self.hosts.split(",")]
+            allowed_hosts = [
+                host_name.strip() for host_name in self.hosts.split(",")
+            ]
         if self.is_production:
             return ["webserver", *allowed_hosts]
         return ["localhost", "127.0.0.1", *allowed_hosts]
