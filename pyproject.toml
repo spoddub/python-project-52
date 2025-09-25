@@ -5,7 +5,7 @@ description = "Task Manager"
 requires-python = ">=3.10"
 dependencies = [
   "dj-database-url>=3.0.1",
-  "Django==5.2.6",
+  "django==5.2.6",
   "django-bootstrap5==25.2",
   "django-filter==25.1",
   "dotenv>=0.9.9",
