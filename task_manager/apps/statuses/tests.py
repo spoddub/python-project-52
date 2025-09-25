@@ -1,9 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
-from unittest_parametrize import ParametrizedTestCase, parametrize
 
 from task_manager.apps.core import text_constants
 from task_manager.apps.statuses.models import Status
+from unittest_parametrize import ParametrizedTestCase, parametrize
 
 
 class StatusesTest(TestCase):

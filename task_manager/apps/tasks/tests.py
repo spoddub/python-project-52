@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-from unittest_parametrize import ParametrizedTestCase, parametrize
 
 from task_manager.apps.core import text_constants
 from task_manager.apps.tasks.models import Task
+from unittest_parametrize import ParametrizedTestCase, parametrize
 
 
 class TasksTest(TestCase):

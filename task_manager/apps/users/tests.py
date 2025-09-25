@@ -2,9 +2,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.test import TestCase
 from django.urls import reverse
-from unittest_parametrize import ParametrizedTestCase, parametrize
 
 from task_manager.apps.core import text_constants
+from unittest_parametrize import ParametrizedTestCase, parametrize
 
 
 class UnAuthenticatedUsersTest(TestCase):
