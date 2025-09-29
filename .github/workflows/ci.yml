@@ -9,16 +9,18 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DJANGO_DEBUG: "0"
-      SECRET_KEY: test-secret-key
+      SECRET_KEY: "ci-secret"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
 
-      - name: Install deps
-        run: uv sync --all-extras --dev
+      - name: Install project dependencies
+        run: uv sync --dev
 
       - name: Ruff (lint + format check)
         run: |
