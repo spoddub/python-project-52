@@ -1,5 +1,6 @@
 [![CI](https://github.com/spoddub/python-project-52/actions/workflows/ci.yml/badge.svg)](https://github.com/spoddub/python-project-52/actions)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=spoddub_python-project-52&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=spoddub_python-project-52)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=spoddub_python-project-52&metric=coverage)](https://sonarcloud.io/summary/new_code?id=spoddub_python-project-52)
 
 [**Task Manager — live demo on Render**](https://python-project-52-mqpb.onrender.com/)
 
