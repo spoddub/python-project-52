@@ -126,37 +126,42 @@ class TasksTest(TestCase):
         self.assertEqual(actual_tasks_count, self.executor_filter_tasks_count)
 
     def test_tasks_filter_own_tasks(self):
-        self.client.post(self.tasks_create_url, data=self.new_task_data,
-                         follow=True)
+        self.client.post(
+            self.tasks_create_url, data=self.new_task_data, follow=True
+        )
         response = self.client.get(self.tasks_filter_own_tasks_url)
         self.assertEqual(response.status_code, 200)
         actual_tasks_count = len(response.context["tasks"])
         self.assertEqual(actual_tasks_count, self.own_tasks_filter_tasks_count)
 
     def test_tasks_filter_full(self):
-        self.client.post(self.tasks_create_url, data=self.new_task_data,
-                         follow=True)
+        self.client.post(
+            self.tasks_create_url, data=self.new_task_data, follow=True
+        )
         response = self.client.get(self.tasks_filter_full_url)
         self.assertEqual(response.status_code, 200)
         actual_tasks_count = len(response.context["tasks"])
         self.assertEqual(actual_tasks_count, self.full_filter_tasks_count)
 
     def test_tasks_user_delete_restrict(self):
-        self.client.post(self.tasks_create_url, data=self.new_task_data,
-                         follow=True)
+        self.client.post(
+            self.tasks_create_url, data=self.new_task_data, follow=True
+        )
         response = self.client.post(
             reverse("users_delete", kwargs={"pk": 4}), follow=True
         )
         self.assertContains(response, text_constants.USER_RESTRICT_DELETE)
 
     def test_tasks__with_status_delete_restrict(self):
-        response = self.client.post(self.delete_status_with_task_url,
-                                    follow=True)
+        response = self.client.post(
+            self.delete_status_with_task_url, follow=True
+        )
         self.assertContains(response, text_constants.STATUS_RESTRICT_DELETE)
 
     def test_tasks__with_label_delete_restrict(self):
-        response = self.client.post(self.delete_label_with_task_url,
-                                    follow=True)
+        response = self.client.post(
+            self.delete_label_with_task_url, follow=True
+        )
         self.assertContains(response, text_constants.LABEL_RESTRICT_DELETE)
 
 

@@ -16,14 +16,17 @@ class LoginRequiredWithMessageMiddleware:
         self.login_path = str(reverse_lazy("login"))
         self.signup_path = str(reverse_lazy("users_create"))
         self.users_index_path = str(reverse_lazy("users_index"))
-        self.public_paths = {"/", self.login_path, self.signup_path,
-                             self.users_index_path}
+        self.public_paths = {
+            "/",
+            self.login_path,
+            self.signup_path,
+            self.users_index_path,
+        }
 
     def __call__(self, request):
         path = request.path
-        if (
-            path.startswith("/admin/")
-            or (settings.STATIC_URL and path.startswith(settings.STATIC_URL))
+        if path.startswith("/admin/") or (
+            settings.STATIC_URL and path.startswith(settings.STATIC_URL)
         ):
             return self.get_response(request)
         if path in self.public_paths:
@@ -57,8 +60,9 @@ class RollbarNotifierMiddleware:
                             "development" if settings.DEBUG else "production",
                         ),
                         root=str(settings.BASE_DIR),
-                        code_version=settings.ROLLBAR.get("code_version",
-                                                          "1.0"),
+                        code_version=settings.ROLLBAR.get(
+                            "code_version", "1.0"
+                        ),
                     )
                 except Exception:
                     pass
