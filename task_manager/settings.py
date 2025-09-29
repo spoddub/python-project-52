@@ -43,11 +43,12 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "task_manager.apps.core.middleware.LoginRequiredWithMessageMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "task_manager.apps.core.middleware.LoginRequiredWithMessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "task_manager.apps.core.middleware.RollbarNotifierMiddleware",
 ]
+
 
 ROOT_URLCONF = "task_manager.urls"
 

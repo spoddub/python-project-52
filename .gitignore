@@ -31,3 +31,4 @@ Thumbs.db
 .coverage
 htmlcov/
 coverage.xml
+requirements.txt

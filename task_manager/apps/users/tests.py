@@ -4,7 +4,6 @@ from django.test import TestCase
 from django.urls import reverse
 
 from task_manager.apps.core import text_constants
-from unittest_parametrize import ParametrizedTestCase, parametrize
 
 
 class UnAuthenticatedUsersTest(TestCase):
@@ -131,15 +130,16 @@ class AuthenticatedUsersTest(TestCase):
         self.assertContains(response, text_constants.USER_PERMISSION_DENIED)
 
 
-class UnAuthenticatedUserssTest(ParametrizedTestCase, TestCase):
+class UnAuthenticatedUserssTest(TestCase):
     login_url = reverse("login")
     urls = [
         (reverse("users_update", kwargs={"pk": 1}), login_url),
         (reverse("users_delete", kwargs={"pk": 1}), login_url),
     ]
 
-    @parametrize("url,login_url", urls)
-    def test_users_login(self, url, login_url):
-        response = self.client.get(url, follow=True)
-        self.assertRedirects(response, login_url)
-        self.assertContains(response, text_constants.LOGIN_REQUIRED)
+    def test_users_login(self):
+        for url, login_url in self.urls:
+            with self.subTest(url=url):
+                response = self.client.get(url, follow=True)
+                self.assertRedirects(response, f"{login_url}?next={url}")
+                self.assertContains(response, text_constants.LOGIN_REQUIRED)

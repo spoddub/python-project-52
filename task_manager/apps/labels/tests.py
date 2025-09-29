@@ -4,11 +4,11 @@ from django.urls import reverse
 
 from task_manager.apps.core import text_constants
 from task_manager.apps.labels.models import Label
-from unittest_parametrize import ParametrizedTestCase, parametrize
 
 
-class StatusesTest(TestCase):
+class LabelsTest(TestCase):
     fixtures = ["labels.json", "users.json"]
+
     expected_labels_count = 3
     test_label_id = 2
     testuser_username = "user4"
@@ -23,10 +23,12 @@ class StatusesTest(TestCase):
     def setUp(self):
         user = get_user_model()
         user.objects.create_user(
-            username=self.testuser_username, password=self.testuser_password
+            username=self.testuser_username,
+            password=self.testuser_password,
         )
         self.client.login(
-            username=self.testuser_username, password=self.testuser_password
+            username=self.testuser_username,
+            password=self.testuser_password,
         )
 
     def test_labels_index(self):
@@ -51,9 +53,7 @@ class StatusesTest(TestCase):
     def test_labels_update(self):
         response = self.client.post(
             self.labels_update_url,
-            data={
-                "name": "Bug fixing",
-            },
+            data={"name": "Bug fixing"},
             follow=True,
         )
         self.assertRedirects(response, self.labels_index_url)
@@ -76,7 +76,7 @@ class StatusesTest(TestCase):
         self.assertEqual(actual_labels_count, self.expected_labels_count - 1)
 
 
-class UnAuthenticatedLabelsTest(ParametrizedTestCase, TestCase):
+class UnAuthenticatedLabelsTest(TestCase):
     login_url = reverse("login")
     urls = [
         (reverse("labels_index"), login_url),
@@ -85,8 +85,9 @@ class UnAuthenticatedLabelsTest(ParametrizedTestCase, TestCase):
         (reverse("labels_delete", kwargs={"pk": 1}), login_url),
     ]
 
-    @parametrize("url,login_url", urls)
-    def test_labels_login(self, url, login_url):
-        response = self.client.get(url, follow=True)
-        self.assertRedirects(response, login_url)
-        self.assertContains(response, text_constants.LOGIN_REQUIRED)
+    def test_labels_login(self):
+        for url, login_url in self.urls:
+            with self.subTest(url=url):
+                response = self.client.get(url, follow=True)
+                self.assertRedirects(response, f"{login_url}?next={url}")
+                self.assertContains(response, text_constants.LOGIN_REQUIRED)

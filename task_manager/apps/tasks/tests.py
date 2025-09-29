@@ -4,7 +4,6 @@ from django.urls import reverse
 
 from task_manager.apps.core import text_constants
 from task_manager.apps.tasks.models import Task
-from unittest_parametrize import ParametrizedTestCase, parametrize
 
 
 class TasksTest(TestCase):
@@ -102,6 +101,7 @@ class TasksTest(TestCase):
             "name": task_to_delete.name
         }
         self.assertContains(response, delete_confirm_message)
+
         response = self.client.post(self.tasks_delete_url, follow=True)
         self.assertRedirects(response, self.tasks_index_url)
         self.assertContains(response, text_constants.TASK_DELETED)
@@ -126,52 +126,41 @@ class TasksTest(TestCase):
         self.assertEqual(actual_tasks_count, self.executor_filter_tasks_count)
 
     def test_tasks_filter_own_tasks(self):
-        self.client.post(
-            self.tasks_create_url,
-            data=self.new_task_data,
-            follow=True,
-        )
+        self.client.post(self.tasks_create_url, data=self.new_task_data,
+                         follow=True)
         response = self.client.get(self.tasks_filter_own_tasks_url)
         self.assertEqual(response.status_code, 200)
         actual_tasks_count = len(response.context["tasks"])
         self.assertEqual(actual_tasks_count, self.own_tasks_filter_tasks_count)
 
     def test_tasks_filter_full(self):
-        self.client.post(
-            self.tasks_create_url,
-            data=self.new_task_data,
-            follow=True,
-        )
+        self.client.post(self.tasks_create_url, data=self.new_task_data,
+                         follow=True)
         response = self.client.get(self.tasks_filter_full_url)
         self.assertEqual(response.status_code, 200)
         actual_tasks_count = len(response.context["tasks"])
         self.assertEqual(actual_tasks_count, self.full_filter_tasks_count)
 
     def test_tasks_user_delete_restrict(self):
-        self.client.post(
-            self.tasks_create_url,
-            data=self.new_task_data,
-            follow=True,
-        )
+        self.client.post(self.tasks_create_url, data=self.new_task_data,
+                         follow=True)
         response = self.client.post(
             reverse("users_delete", kwargs={"pk": 4}), follow=True
         )
         self.assertContains(response, text_constants.USER_RESTRICT_DELETE)
 
     def test_tasks__with_status_delete_restrict(self):
-        response = self.client.post(
-            self.delete_status_with_task_url, follow=True
-        )
+        response = self.client.post(self.delete_status_with_task_url,
+                                    follow=True)
         self.assertContains(response, text_constants.STATUS_RESTRICT_DELETE)
 
     def test_tasks__with_label_delete_restrict(self):
-        response = self.client.post(
-            self.delete_label_with_task_url, follow=True
-        )
+        response = self.client.post(self.delete_label_with_task_url,
+                                    follow=True)
         self.assertContains(response, text_constants.LABEL_RESTRICT_DELETE)
 
 
-class UnAuthenticatedTasksTest(ParametrizedTestCase, TestCase):
+class UnAuthenticatedTasksTest(TestCase):
     login_url = reverse("login")
     urls = [
         (reverse("tasks_index"), login_url),
@@ -180,8 +169,9 @@ class UnAuthenticatedTasksTest(ParametrizedTestCase, TestCase):
         (reverse("tasks_delete", kwargs={"pk": 1}), login_url),
     ]
 
-    @parametrize("url,login_url", urls)
-    def test_tasks_login(self, url, login_url):
-        response = self.client.get(url, follow=True)
-        self.assertRedirects(response, login_url)
-        self.assertContains(response, text_constants.LOGIN_REQUIRED)
+    def test_tasks_login(self):
+        for url, login_url in self.urls:
+            with self.subTest(url=url):
+                response = self.client.get(url, follow=True)
+                self.assertRedirects(response, f"{login_url}?next={url}")
+                self.assertContains(response, text_constants.LOGIN_REQUIRED)
